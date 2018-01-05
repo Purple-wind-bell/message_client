@@ -74,4 +74,11 @@ public class FormatSMS implements Serializable {
 		content = content;
 	}
 
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		String string = "发件人:" + sourceAddress + "	\n收件人:" + targetAddress + "\n短信内容: " + content;
+		return string;
+	}
+
 }

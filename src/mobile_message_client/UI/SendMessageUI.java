@@ -14,7 +14,6 @@ import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -27,25 +26,27 @@ public class SendMessageUI extends JFrame {
 	/** 命令 ，例如003 */
 	String cmd = "CMD003";
 	/** 源地址 */
-	String sourceAddress = "00000000000";
+	String sourceAddress = "17012341234";
 	/** 目标地址 */
-	String targetAddress = "000";
+	String targetAddress = "00000000000";
 	/** 短信长度或返回状态码 */
-	String status = "0000";
+	String status = "0001";
 	/** 短信内容 */
 	String content = "0";
 	/** 显示框内容 */
 	StringBuilder mString = new StringBuilder();
+	JTextArea jta1 = new JTextArea(25, 30);
+	JTextField jtf1 = new JTextField(25);
+	JTextField jtf2 = new JTextField(23);
 
 	public SendMessageUI(String sourceAddress) throws HeadlessException {
 		super();
 		this.sourceAddress = sourceAddress;
 	}
 
-	void sendmessage() {
+	public void sendmessage() {
 		Container c = this.getContentPane();
 		c.setLayout(new FlowLayout());
-
 		JPanel jp1 = new JPanel();
 		JPanel jp2 = new JPanel();
 		JPanel jp3 = new JPanel();
@@ -53,21 +54,16 @@ public class SendMessageUI extends JFrame {
 		JPanel jp5 = new JPanel();
 
 		JLabel jl1 = new JLabel("收件人：");
-		final JTextField jtf1 = new JTextField(25);
 		JLabel jl2 = new JLabel(
 				"内容：                                                                                                 ");
-		final JTextArea jta1 = new JTextArea(25, 30);
 		JLabel jl3 = new JLabel("编辑信息：");
-		final JTextField jtf2 = new JTextField(23);
 		JButton jb1 = new JButton("发送");
 		JButton jb2 = new JButton("退出");
-
 		c.add(jp1);
 		c.add(jp2);
 		c.add(jp3);
 		c.add(jp4);
 		c.add(jp5);
-
 		jp1.add(jl1);
 		jp1.add(jtf1);
 		jp2.add(jl2);
@@ -76,7 +72,7 @@ public class SendMessageUI extends JFrame {
 		jp4.add(jtf2);
 		jp5.add(jb1);
 		jp5.add(jb2);
-
+		// -----------
 		this.setVisible(true);
 		this.setTitle("短信");
 		this.setSize(400, 620);
@@ -89,10 +85,13 @@ public class SendMessageUI extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				String s = jtf1.getText();
-				if (s.length() != 11) {
+				String s = jtf1.getText().toString();
+				if (s.length() > 11) {
 					e.consume();
 				} else {
+					for (int i = 0; i < 11 - s.length(); i++) {
+						s = "0" + s;
+					}
 					targetAddress = s;
 				}
 			}
@@ -117,7 +116,7 @@ public class SendMessageUI extends JFrame {
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = jtf2.getText();
-				if (s.length() >= 140) {
+				if (s.length() > 140) {
 					e.consume();
 				} else {
 					content = s;
@@ -168,14 +167,11 @@ public class SendMessageUI extends JFrame {
 	 * @author Administrator
 	 *
 	 */
-	class Receive {
+	class Receive extends Thread {
 		/** 创建端口 */
 		ServerSocket server = null;
 		/** 端口号 */
 		int PORT = 5600;
-		/** SMS */
-		String sms = null;
-		FormatSMS formatSMS = null;
 		BufferedReader bReader = null;
 		private Socket socket = null;
 
@@ -191,27 +187,17 @@ public class SendMessageUI extends JFrame {
 		/**
 		 * 监听接收短信
 		 */
-		void listen() {
+		public void run() {
 			while (true) {
+				String smsString;
+				FormatSMS receiveSMS = null;
 				try {
-					String smsString = null;
-					FormatSMS receiveSMS = null;
 					socket = server.accept();// 每个请求交给一个线程去处理
 					bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					if ((smsString = bReader.readLine()) != null) {
-						formatSMS = FormatUtil.toFormatSMS(smsString);// 接收的短信
-
-						if (!receiveSMS.getSourceAddress().substring(0, 8).equals("00000000")) {
-							if (receiveSMS.getStatus().equals("0000")) {
-								JOptionPane.showMessageDialog(null, "成功发送！", "提示", JOptionPane.PLAIN_MESSAGE);
-							} else if (receiveSMS.getStatus().equals("0001")) {
-								JOptionPane.showMessageDialog(null, "发送失败！", "提示", JOptionPane.ERROR_MESSAGE);
-							}
-						} else {
-							mString.append(s);// 添加短信
-							jta1.setText(mString.toString());// 显示所有收发短信
-						}
-
+						receiveSMS = FormatUtil.toFormatSMS(smsString);// 接收的短信
+						mString.append(receiveSMS.getContent());// 添加短信
+						jta1.setText(receiveSMS.toString());// 显示所有收发短信
 						break;
 					}
 				} catch (Exception e) {
@@ -219,7 +205,6 @@ public class SendMessageUI extends JFrame {
 				}
 			}
 		}
-
 	}
 
 }

@@ -3,6 +3,8 @@ package mobile_message_client.Service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import mobile_message_client.config.Constant;
 import mobile_message_client.util.FormatUtil;
 import mobile_message_client.vo.FormatSMS;
 
@@ -18,7 +20,7 @@ public class SendService {
 	/** 端口号 */
 	int PORT = 5600;
 	/** IP地址 */
-	String IP = " Constant.getServerIP()";
+	String IP = Constant.getServerIP();
 	/** SMS */
 	FormatSMS sms = null;
 	PrintWriter pWriter = null;
