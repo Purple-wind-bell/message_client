@@ -85,13 +85,11 @@ public class SendMessageUI extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				String s = jtf1.getText().toString();
-				if (s.length() > 11) {
+				String s = jtf1.getText();
+				System.out.println(s);
+				if (s.length() >= 11) {
 					e.consume();
 				} else {
-					for (int i = 0; i < 11 - s.length(); i++) {
-						s = "0" + s;
-					}
 					targetAddress = s;
 				}
 			}
@@ -116,7 +114,7 @@ public class SendMessageUI extends JFrame {
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = jtf2.getText();
-				if (s.length() > 140) {
+				if (s.length() >= 140) {
 					e.consume();
 				} else {
 					content = s;
@@ -143,10 +141,9 @@ public class SendMessageUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, targetAddress, status, content);
-				String s = FormatUtil.toStringSMS(sendSMS);
-				mString.append(s);// 添加已发短信
-				jta1.setText(mString.toString());// 显示收发短信
 				new SendService(sendSMS).send();// 发送短信
+				mString.append(sendSMS.toString());// 添加已发短信
+				jta1.setText(mString.toString());// 显示收发短信
 			}
 		});
 
@@ -196,7 +193,7 @@ public class SendMessageUI extends JFrame {
 					bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					if ((smsString = bReader.readLine()) != null) {
 						receiveSMS = FormatUtil.toFormatSMS(smsString);// 接收的短信
-						mString.append(receiveSMS.getContent());// 添加短信
+						mString.append(receiveSMS.toString());// 添加短信
 						jta1.setText(receiveSMS.toString());// 显示所有收发短信
 						break;
 					}
