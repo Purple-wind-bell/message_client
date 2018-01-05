@@ -71,7 +71,7 @@ public class FormatSMS implements Serializable {
 	}
 
 	public void setContent(String content) {
-		content = content;
+		this.content = content;
 	}
 
 	@Override

@@ -18,7 +18,8 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class LoginUI extends JFrame {
 	/** 登录手机号 */
-	String sourceAddress = "00000000000";
+	private String sourceAddress = "00000000000";
+	private String targetAddress = "00000000000";
 
 	public void login() {
 		Container c = this.getContentPane();
@@ -31,8 +32,6 @@ public class LoginUI extends JFrame {
 		JPanel jp2 = new JPanel();
 		JPanel jp3 = new JPanel();
 		JPanel jp4 = new JPanel();
-		// JPanel jp5 = new JPanel();
-
 		JLabel jl1 = new JLabel("账号：");
 		final JTextField jtf1 = new JTextField(20);
 		JLabel jl2 = new JLabel("密码：");
@@ -40,11 +39,8 @@ public class LoginUI extends JFrame {
 
 		JCheckBox jcb1 = new JCheckBox("记住密码");
 		JCheckBox jcb2 = new JCheckBox("自动登录");
-		JCheckBox jcb3 = new JCheckBox("记住IP");
-
 		JLabel jl5 = new JLabel("IP地址：");
 		JTextField jtf2 = new JTextField(20);
-
 		JButton jb1 = new JButton("登录");
 		JButton jb2 = new JButton("退出");
 		JButton jb3 = new JButton("注册账号");
@@ -53,20 +49,15 @@ public class LoginUI extends JFrame {
 		c.add(jp2);
 		c.add(jp3);
 		c.add(jp4);
-		// c.add(jp5);
-
 		jp1.add(jl1);
 		jp1.add(jtf1);
 		jp1.add(jcb1);
-
 		jp2.add(jl2);
 		jp2.add(jpf1);
 		jp2.add(jcb2);
-
 		jp3.add(jl5);
 		jp3.add(jtf2);
 		jp3.add(jb3);
-
 		jp4.add(jb1);
 		jp4.add(jb2);
 
@@ -86,6 +77,8 @@ public class LoginUI extends JFrame {
 				String s = jtf1.getText();
 				if (s.length() >= 11) {
 					e.consume();
+				} else {
+					targetAddress = s;
 				}
 			}
 
@@ -135,7 +128,7 @@ public class LoginUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new RegistUI().regist();
+				new RegisterUI().regist();
 			}
 		});
 

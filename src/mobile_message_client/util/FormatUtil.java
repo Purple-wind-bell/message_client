@@ -23,12 +23,11 @@ public class FormatUtil {
 	 */
 	public static FormatSMS toFormatSMS(String message) {
 		// TODO Auto-generated method stub
-		StringBuilder sms = new StringBuilder(message);
-		String cmd = sms.substring(0, 6);
-		String sourceAddress = sms.substring(6, 17);
-		String targetAddress = sms.substring(17, 28);
-		String status = sms.substring(28, 32);
-		String SMSContent = sms.substring(32);
+		String cmd = message.substring(0, 6);
+		String sourceAddress = message.substring(6, 17);
+		String targetAddress = message.substring(17, 28);
+		String status = message.substring(28, 32);
+		String SMSContent = message.substring(32);
 		return new FormatSMS(cmd, sourceAddress, targetAddress, status, SMSContent);
 	}
 
@@ -46,7 +45,7 @@ public class FormatUtil {
 		SMSString.append(formatSMS.getSourceAddress() != null ? formatSMS.getSourceAddress() : "00000000000");
 		SMSString.append(formatSMS.getTargetAddress() != null ? formatSMS.getTargetAddress() : "00000000000");
 		SMSString.append(formatSMS.getStatus() != null ? formatSMS.getStatus() : "0000");
-		SMSString.append(formatSMS.getContent() != null ? formatSMS.getContent() : "0");
+		SMSString.append(formatSMS.getContent() != null ? formatSMS.getContent() : "");
 		return SMSString.toString();
 	}
 }

@@ -16,8 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class RegistUI extends JFrame {
-	void regist() {
+public class RegisterUI extends JFrame {
+	void register() {
 		Container c = this.getContentPane();
 
 		c.setLayout(new FlowLayout());
@@ -34,7 +34,6 @@ public class RegistUI extends JFrame {
 		JTextField jtf2 = new JTextField(25);
 		JLabel jl3 = new JLabel("密码：");
 		JTextField jtf3 = new JTextField(25);
-
 		JButton jb1 = new JButton("注册");
 		JButton jb2 = new JButton("退出");
 
@@ -106,7 +105,7 @@ public class RegistUI extends JFrame {
 		this.setTitle("注册");
 		this.setSize(400, 200);
 		this.setLocation(400, 200);
-		this.setDefaultCloseOperation(RegistUI.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(RegisterUI.EXIT_ON_CLOSE);
 		this.setResizable(false);
 
 	}
