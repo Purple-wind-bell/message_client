@@ -41,7 +41,6 @@ public class SendService {
 			socket = new Socket(IP, PORT);
 			pWriter = new PrintWriter(socket.getOutputStream());
 			String outString = FormatUtil.toStringSMS(sms);
-			outString = outString + "\n";
 			pWriter.println(outString);// 发送
 			pWriter.flush();
 			status = true;
@@ -49,12 +48,14 @@ public class SendService {
 			e.printStackTrace();
 			status = false;
 		} finally {
-			try {
-				pWriter.close();// 关闭连接
-				socket.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (socket != null) {
+				try {
+					pWriter.close();// 关闭连接
+					socket.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		return status;

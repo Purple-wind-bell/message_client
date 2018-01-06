@@ -142,7 +142,7 @@ public class SendMessageUI extends JFrame {
 				// TODO Auto-generated method stub
 				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, targetAddress, status, content);
 				new SendService(sendSMS).send();// 发送短信
-				mString.append(sendSMS.toString());// 添加已发短信
+				mString.append(sendSMS.toString() + "/n");// 添加已发短信
 				jta1.setText(mString.toString());// 显示收发短信
 			}
 		});
