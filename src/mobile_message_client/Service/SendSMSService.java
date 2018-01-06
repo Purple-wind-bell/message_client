@@ -14,18 +14,18 @@ import mobile_message_client.vo.FormatSMS;
  * @author Administrator
  *
  */
-public class SendService {
+public class SendSMSService {
 	/** 创建端口 */
 	Socket socket = null;
 	/** 端口号 */
-	int PORT = 5600;
+	int PORT = Constant.getServerSMSPort();
 	/** IP地址 */
 	String IP = Constant.getServerIP();
 	/** SMS */
 	FormatSMS sms = null;
 	PrintWriter pWriter = null;
 
-	public SendService(FormatSMS formatSMS) {
+	public SendSMSService(FormatSMS formatSMS) {
 		super();
 		this.sms = formatSMS;
 	}

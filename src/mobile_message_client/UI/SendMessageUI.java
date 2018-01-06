@@ -17,7 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import mobile_message_client.Service.SendService;
+import mobile_message_client.Service.SendSMSService;
+import mobile_message_client.config.Constant;
 import mobile_message_client.util.FormatUtil;
 import mobile_message_client.vo.FormatSMS;
 
@@ -86,7 +87,6 @@ public class SendMessageUI extends JFrame {
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = jtf1.getText();
-				System.out.println(s);
 				if (s.length() >= 11) {
 					e.consume();
 				} else {
@@ -140,8 +140,9 @@ public class SendMessageUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				System.out.println("targetAddress" + targetAddress);
 				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, targetAddress, status, content);
-				new SendService(sendSMS).send();// 发送短信
+				new SendSMSService(sendSMS).send();// 发送短信
 				mString.append(sendSMS.toString() + "/n");// 添加已发短信
 				jta1.setText(mString.toString());// 显示收发短信
 			}
@@ -159,7 +160,7 @@ public class SendMessageUI extends JFrame {
 	}
 
 	/**
-	 * 内部类，解决短信收发
+	 * 内部类，解决短信接收
 	 * 
 	 * @author Administrator
 	 *
@@ -168,7 +169,7 @@ public class SendMessageUI extends JFrame {
 		/** 创建端口 */
 		ServerSocket server = null;
 		/** 端口号 */
-		int PORT = 5600;
+		int PORT = Constant.getClientSMSPort();
 		BufferedReader bReader = null;
 		private Socket socket = null;
 

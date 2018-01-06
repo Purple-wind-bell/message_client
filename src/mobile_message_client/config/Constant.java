@@ -1,5 +1,7 @@
 package mobile_message_client.config;
 
+import java.net.InetAddress;
+
 /**
  * 参数配置
  * 
@@ -13,8 +15,14 @@ public final class Constant {
 	static String mysqlUser = "root";
 	/** MySQL用户密码 */
 	static String mysqlPasswd = "123456";
+	/** 客户端普通短信接收端口 */
+	static int clientSMSPort = 5700;
+	/** 服务器普通短信收发端口 */
+	static int serverSMSPort = 5600;
+	/** 服务器注册登录端口 */
+	static int registerPort = 5650;
 	/** 服务器IP */
-	static String ServerIP = "192.168.3.30";
+	static String serverIP = "127.0.0.1";
 
 	private Constant() {
 	}
@@ -46,8 +54,19 @@ public final class Constant {
 		return mysqlPasswd;
 	}
 
-	public static String getServerIP() {
-		return ServerIP;
+	public static int getClientSMSPort() {
+		return clientSMSPort;
 	}
 
+	public static int getServerSMSPort() {
+		return serverSMSPort;
+	}
+
+	public static int getRegisterPort() {
+		return registerPort;
+	}
+
+	public static String getServerIP() {
+		return serverIP;
+	}
 }

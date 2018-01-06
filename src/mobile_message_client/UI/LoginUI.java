@@ -15,9 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
-import mobile_message_client.Service.ReceiveService;
-import mobile_message_client.Service.SendService;
+import mobile_message_client.Service.RegisterService;
 import mobile_message_client.vo.FormatSMS;
 
 @SuppressWarnings("serial")
@@ -26,8 +24,9 @@ public class LoginUI extends JFrame {
 	private String sourceAddress = "00000000000";
 	/** 密码 */
 	private String password = "";
+	/** 当前用户是否在线 */
+	boolean onlineStatus = false;
 	private String ip = "0.0.0.0";
-	ReceiveService rService = null;
 
 	public LoginUI() throws HeadlessException {
 		super();
@@ -44,8 +43,7 @@ public class LoginUI extends JFrame {
 		JLabel jl1 = new JLabel("账号：");
 		final JTextField jtf1 = new JTextField(20);
 		JLabel jl2 = new JLabel("密码：");
-		JPasswordField jpf1 = new JPasswordField(20);
-
+		final JPasswordField jpf1 = new JPasswordField(20);
 		JCheckBox jcb1 = new JCheckBox("记住密码");
 		JCheckBox jcb2 = new JCheckBox("自动登录");
 		JLabel jl5 = new JLabel("IP地址：");
@@ -83,6 +81,8 @@ public class LoginUI extends JFrame {
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = jtf1.getText();
+				// System.out.println("手机号：" + s);
+				System.out.println("手机号长度:" + s.length());
 				if (s.length() >= 11) {
 					e.consume();
 				} else {
@@ -105,7 +105,8 @@ public class LoginUI extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				String s = jtf1.getText();
+				String s = new String(jpf1.getPassword());
+				System.out.println("密码长度：" + s.length());
 				if (s.length() >= 6) {
 					e.consume();
 				} else {
@@ -120,6 +121,7 @@ public class LoginUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// 登录手机号长度和密码长度检查
+				// System.out.println("手机号：" + sourceAddress);
 				if (sourceAddress.length() < 11 || password.length() < 6) {
 					JOptionPane.showMessageDialog(null, "用户名或密码长度错误！", "提示", JOptionPane.ERROR_MESSAGE);
 				} else {
@@ -127,13 +129,10 @@ public class LoginUI extends JFrame {
 					String status = "0000";
 					String content = "DL" + password + ip;
 					FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, null, status, content);
-					new SendService(sendSMS).send();
-					// 接收回复短信
-					FormatSMS reveiceSMS = null;
-					ReceiveService rService = new ReceiveService();
-					rService.start();
-					while ((reveiceSMS = rService.getSMS()) != null) {
-						rService.close();// 关闭接收端口
+					RegisterService register = RegisterService.getRegisterService(sendSMS);// 发送登录请求
+					FormatSMS reveiceSMS = register.start();
+					// ==========================
+					if (reveiceSMS != null) {
 						switch (reveiceSMS.getStatus()) {
 						case "3000":// 用户不存在
 							JOptionPane.showMessageDialog(null, "账号不存在！", "提示", JOptionPane.WARNING_MESSAGE);
@@ -152,6 +151,8 @@ public class LoginUI extends JFrame {
 							JOptionPane.showMessageDialog(null, "未知错误！", "提示", JOptionPane.ERROR_MESSAGE);
 							break;
 						}
+					} else {
+						JOptionPane.showMessageDialog(null, "未知错误！", "提示", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -166,13 +167,10 @@ public class LoginUI extends JFrame {
 				String status = "0000";
 				String content = "0";
 				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, null, status, content);
-				new SendService(sendSMS).send();
-				// 接收回复短信
-				FormatSMS reveiceSMS = null;
-				ReceiveService rService = new ReceiveService();
-				rService.start();
-				while ((reveiceSMS = rService.getSMS()) != null) {
-					rService.close();// 关闭接收端口
+				RegisterService register = RegisterService.getRegisterService(sendSMS);// 发送登录请求
+				FormatSMS reveiceSMS = register.start();
+				if (reveiceSMS != null) {
+					register.close();// 关闭接收端口
 					switch (reveiceSMS.getStatus()) {
 					case "0000":// 注销成功
 						JOptionPane.showMessageDialog(null, "注销成功！", "提示", JOptionPane.PLAIN_MESSAGE);
@@ -184,6 +182,8 @@ public class LoginUI extends JFrame {
 						JOptionPane.showMessageDialog(null, "未知错误！", "提示", JOptionPane.ERROR_MESSAGE);
 						break;
 					}
+				} else {
+					JOptionPane.showMessageDialog(null, "注销失败！", "提示", JOptionPane.ERROR_MESSAGE);
 				}
 				System.exit(0);
 			}

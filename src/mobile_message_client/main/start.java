@@ -1,5 +1,6 @@
 package mobile_message_client.main;
 
+import mobile_message_client.UI.LoginUI;
 import mobile_message_client.UI.SendMessageUI;
 
 /**
@@ -10,6 +11,7 @@ import mobile_message_client.UI.SendMessageUI;
  */
 public class start {
 	public static void main(String[] args) {
-		new SendMessageUI("17012341234").sendmessage();
+		new LoginUI().login();
+//		new SendMessageUI("17655555555").sendmessage();
 	}
 }
