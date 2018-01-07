@@ -1,7 +1,6 @@
 package mobile_message_client.main;
 
 import mobile_message_client.UI.LoginUI;
-import mobile_message_client.UI.SendMessageUI;
 
 /**
  * 启动客户端

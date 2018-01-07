@@ -17,23 +17,18 @@ import mobile_message_client.vo.FormatSMS;
  */
 public class RegisterService {
 	/** 创建端口 */
-	private static Socket registerSocket = null;
+	private Socket registerSocket = null;
 	/** 服务器IP */
 	private static String serverIP = Constant.getServerIP();
-	/** 端口号 */
+	/** 端口号5650 */
 	private static int port = Constant.getRegisterPort();
 	/** 接收的返回信息 */
 	private FormatSMS receiveFormatSMS;
-	private static FormatSMS sendFormatSMS;
-	private static PrintWriter pWriter = null;
-	private static BufferedReader bReader = null;
-	private static RegisterService registerService = null;
+	private FormatSMS sendFormatSMS;
+	private PrintWriter pWriter = null;
+	private BufferedReader bReader = null;
 
-	static {
-		registerService = new RegisterService();
-	}
-
-	private RegisterService() {
+	public RegisterService(FormatSMS sendSMS) {
 		super();
 		try {
 			registerSocket = new Socket(serverIP, port);// 创建端口连接注册服务器
@@ -41,29 +36,11 @@ public class RegisterService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public static RegisterService getRegisterService(FormatSMS sendSMS) {
 		sendFormatSMS = sendSMS;
-		return registerService;
 	}
 
 	/**
-	 * 关闭监听
-	 */
-	public void close() {
-		if (registerSocket != null) {
-			try {
-				registerSocket.close();// 关闭
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
-	 * 监听接收短信
+	 * 注册收发信息
 	 * 
 	 * @return
 	 */
@@ -72,19 +49,29 @@ public class RegisterService {
 		try {
 			pWriter = new PrintWriter(registerSocket.getOutputStream());
 			bReader = new BufferedReader(new InputStreamReader(registerSocket.getInputStream()));
+			System.out.println("sendFormatSMS" + sendFormatSMS.toString());
+			System.out.println(FormatUtil.toStringSMS(sendFormatSMS));
 			pWriter.println(FormatUtil.toStringSMS(sendFormatSMS));// 发送登录注册短信
-			new Thread();
-			Thread.sleep(1000);
-			if ((insms = bReader.readLine()) != null) {
-				receiveFormatSMS = FormatUtil.toFormatSMS(insms);// 格式化信息
-			} else {
-				receiveFormatSMS = null;
+			pWriter.flush();
+			System.out.println("注册已发送");
+			while (insms == null) {
+				insms = bReader.readLine();
 			}
-		} catch (IOException | InterruptedException e) {
+			receiveFormatSMS = FormatUtil.toFormatSMS(insms);// 格式化信息
+//			System.out.println("receiveFormatSMS" + receiveFormatSMS.toString());
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			sendFormatSMS = null;
+			if (registerSocket != null) {
+				try {
+					registerSocket.close();// 关闭
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		return receiveFormatSMS;
 	}

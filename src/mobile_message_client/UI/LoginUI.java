@@ -47,7 +47,7 @@ public class LoginUI extends JFrame {
 		JCheckBox jcb1 = new JCheckBox("记住密码");
 		JCheckBox jcb2 = new JCheckBox("自动登录");
 		JLabel jl5 = new JLabel("IP地址：");
-		JTextField jtf2 = new JTextField(20);
+		final JTextField jtf2 = new JTextField(20);
 		JButton jb1 = new JButton("登录");
 		JButton jb2 = new JButton("退出");
 		JButton jb3 = new JButton("注册账号");
@@ -80,14 +80,13 @@ public class LoginUI extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				String s = jtf1.getText();
-				// System.out.println("手机号：" + s);
-				System.out.println("手机号长度:" + s.length());
+				String s = jtf1.getText().toString().trim();
 				if (s.length() >= 11) {
 					e.consume();
-				} else {
-					sourceAddress = s;
 				}
+				sourceAddress = s;
+//				System.out.println("sourceAddress" + sourceAddress);
+//				System.out.println("手机号长度:" + sourceAddress.length());
 			}
 		});
 
@@ -96,7 +95,7 @@ public class LoginUI extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				ip = jtf1.getText();
+//				String s = jtf2.getText();
 			}
 		});
 
@@ -105,13 +104,13 @@ public class LoginUI extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-				String s = new String(jpf1.getPassword());
+				String s = new String(jpf1.getPassword()).trim();
 				System.out.println("密码长度：" + s.length());
 				if (s.length() >= 6) {
 					e.consume();
-				} else {
-					password = s;
 				}
+				password = s;
+//				System.out.println("password" + password);
 			}
 		});
 
@@ -121,16 +120,21 @@ public class LoginUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// 登录手机号长度和密码长度检查
-				// System.out.println("手机号：" + sourceAddress);
-				if (sourceAddress.length() < 11 || password.length() < 6) {
-					JOptionPane.showMessageDialog(null, "用户名或密码长度错误！", "提示", JOptionPane.ERROR_MESSAGE);
+				sourceAddress = jtf1.getText().toString().trim();
+				password = new String(jpf1.getPassword()).trim();
+				ip = jtf2.getText().toString().trim();
+				System.out.println("手机号：" + sourceAddress);
+				System.out.println("密码：" + password);
+				System.out.println("IP:" + ip);
+				if (sourceAddress.length() < 11 || password.length() < 6 || !isIp(ip) || onlineStatus) {
+					JOptionPane.showMessageDialog(null, "用户名密码或IP错误！", "提示", JOptionPane.ERROR_MESSAGE);
 				} else {
 					String cmd = "CMD001";
 					String status = "0000";
 					String content = "DL" + password + ip;
-					FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, null, status, content);
-					RegisterService register = RegisterService.getRegisterService(sendSMS);// 发送登录请求
-					FormatSMS reveiceSMS = register.start();
+					FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, "00000000000", status, content);
+					RegisterService register = new RegisterService(sendSMS);// 发送登录请求
+					FormatSMS reveiceSMS = register.start();// 接收回复短信
 					// ==========================
 					if (reveiceSMS != null) {
 						switch (reveiceSMS.getStatus()) {
@@ -142,6 +146,7 @@ public class LoginUI extends JFrame {
 							break;
 						case "0000":// 登录成功
 							JOptionPane.showMessageDialog(null, "登录成功！", "提示", JOptionPane.PLAIN_MESSAGE);
+							onlineStatus = true;
 							new SendMessageUI(sourceAddress).sendmessage();
 							break;
 						case "0001":// 未知错误
@@ -167,10 +172,9 @@ public class LoginUI extends JFrame {
 				String status = "0000";
 				String content = "0";
 				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, null, status, content);
-				RegisterService register = RegisterService.getRegisterService(sendSMS);// 发送登录请求
-				FormatSMS reveiceSMS = register.start();
+				RegisterService register = new RegisterService(sendSMS);// 发送登录请求
+				FormatSMS reveiceSMS = register.start();// 接收回复短信
 				if (reveiceSMS != null) {
-					register.close();// 关闭接收端口
 					switch (reveiceSMS.getStatus()) {
 					case "0000":// 注销成功
 						JOptionPane.showMessageDialog(null, "注销成功！", "提示", JOptionPane.PLAIN_MESSAGE);
@@ -197,5 +201,24 @@ public class LoginUI extends JFrame {
 				new RegisterUI().register();
 			}
 		});
+	}
+
+	/**
+	 * 判断是否是IP
+	 * 
+	 * @param ip
+	 * @return
+	 */
+	private boolean isIp(String ip) {
+		boolean b = false;
+		ip = ip.trim();
+		if (ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
+			String s[] = ip.split("\\.");
+			if (Integer.parseInt(s[0]) < 255 && Integer.parseInt(s[1]) < 255 && Integer.parseInt(s[2]) < 255
+					&& Integer.parseInt(s[3]) < 255) {
+				b = true;
+			}
+		}
+		return b;
 	}
 }

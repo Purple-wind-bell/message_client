@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import mobile_message_client.Service.RegisterService;
 import mobile_message_client.Service.SendSMSService;
 import mobile_message_client.vo.FormatSMS;
+import sun.security.util.Length;
 
 /**
  * 注册UI
@@ -56,15 +57,18 @@ public class RegisterUI extends JFrame {
 
 		// 输入的手机号控制为11位
 		jtf1.addKeyListener(new KeyAdapter() {
+
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = jtf1.getText();
 				if (s.length() >= 11) {
 					e.consume();
-				} else {
-					sourceAddress = s;
 				}
+				sourceAddress = s;
+				// System.out.println(sourceAddress);
+				// System.out.println("sourceAddress长度" + sourceAddress.length());
+
 			}
 		});
 
@@ -74,12 +78,13 @@ public class RegisterUI extends JFrame {
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = jtf2.getText();
-				System.out.println(s);
 				if (s.length() >= 6) {
 					e.consume();
-				} else {
-					password = s;
 				}
+				password = s;
+				// System.out.println(password);
+				// System.out.println("password长度" + password.length());
+
 			}
 		});
 
@@ -89,6 +94,10 @@ public class RegisterUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// 手机号长度和密码长度检查
+				// System.out.println("sourceAddress" + sourceAddress);
+				// System.out.println("sourceAddress长度" + sourceAddress.length());
+				// System.out.println("password" + password);
+				// System.out.println("password长度" + password.length());
 				if (sourceAddress.length() < 11 || password.length() < 6) {
 					JOptionPane.showMessageDialog(null, "用户名或密码长度错误！", "提示", JOptionPane.ERROR_MESSAGE);
 				} else {
@@ -96,7 +105,7 @@ public class RegisterUI extends JFrame {
 					String status = "0000";
 					String content = "ZC" + password;
 					FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, null, status, content);
-					RegisterService register = RegisterService.getRegisterService(sendSMS);// 发送登录请求
+					RegisterService register = new RegisterService(sendSMS);// 发送登录请求
 					FormatSMS reveiceSMS = register.start();// 接收回复短信
 					if (reveiceSMS != null) {
 						switch (reveiceSMS.getStatus()) {

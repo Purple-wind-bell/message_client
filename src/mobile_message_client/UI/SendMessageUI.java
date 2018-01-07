@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -39,10 +40,13 @@ public class SendMessageUI extends JFrame {
 	JTextArea jta1 = new JTextArea(25, 30);
 	JTextField jtf1 = new JTextField(25);
 	JTextField jtf2 = new JTextField(23);
+	Receive receive = null;
 
 	public SendMessageUI(String sourceAddress) throws HeadlessException {
 		super();
 		this.sourceAddress = sourceAddress;
+		receive = new Receive();
+		receive.start();
 	}
 
 	public void sendmessage() {
@@ -143,7 +147,7 @@ public class SendMessageUI extends JFrame {
 				System.out.println("targetAddress" + targetAddress);
 				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, targetAddress, status, content);
 				new SendSMSService(sendSMS).send();// 发送短信
-				mString.append(sendSMS.toString() + "/n");// 添加已发短信
+				mString.append("发送：" + sendSMS.toString());// 添加已发短信
 				jta1.setText(mString.toString());// 显示收发短信
 			}
 		});
@@ -154,6 +158,7 @@ public class SendMessageUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				receive.close();
 				dispose();
 			}
 		});
@@ -194,13 +199,23 @@ public class SendMessageUI extends JFrame {
 					bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					if ((smsString = bReader.readLine()) != null) {
 						receiveSMS = FormatUtil.toFormatSMS(smsString);// 接收的短信
-						mString.append(receiveSMS.toString());// 添加短信
+						mString.append("接收：" + receiveSMS.toString());// 添加短信
 						jta1.setText(receiveSMS.toString());// 显示所有收发短信
 						break;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
+		}
+
+		public void close() {
+			try {
+				socket.close();
+				bReader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
