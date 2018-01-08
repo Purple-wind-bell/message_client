@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import mobile_message_client.Service.SendSMSService;
-import mobile_message_client.config.Constant;
+import mobile_message_client.util.Constant;
 import mobile_message_client.util.FormatUtil;
 import mobile_message_client.vo.FormatSMS;
 

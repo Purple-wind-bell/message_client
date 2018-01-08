@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import mobile_message_client.config.Constant;
+import mobile_message_client.util.Constant;
 import mobile_message_client.util.FormatUtil;
 import mobile_message_client.vo.FormatSMS;
 
