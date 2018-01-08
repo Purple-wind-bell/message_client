@@ -23,7 +23,7 @@ public final class Constant {
 	static {
 		Properties p = new Properties();
 		InputStream in = Constant.class.getClassLoader()
-				.getResourceAsStream("mobileclient.properties");
+				.getResourceAsStream("mobile_message_client/config/mobileclient.properties");
 		try {
 			p.load(in);
 			in.close();
