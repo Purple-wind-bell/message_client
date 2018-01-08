@@ -25,7 +25,7 @@ public class LoginUI extends JFrame {
 	/** 密码 */
 	private String password = "";
 	/** 当前用户是否在线 */
-	boolean onlineStatus = false;
+	private	boolean onlineStatus = false;
 	private String ip = "0.0.0.0";
 
 	public LoginUI() throws HeadlessException {
@@ -84,9 +84,9 @@ public class LoginUI extends JFrame {
 				if (s.length() >= 11) {
 					e.consume();
 				}
-//				sourceAddress = s;
-//				System.out.println("sourceAddress" + sourceAddress);
-//				System.out.println("手机号长度:" + sourceAddress.length());
+				// sourceAddress = s;
+				// System.out.println("sourceAddress" + sourceAddress);
+				// System.out.println("手机号长度:" + sourceAddress.length());
 			}
 		});
 
@@ -95,7 +95,7 @@ public class LoginUI extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
-//				String s = jtf2.getText();
+				// String s = jtf2.getText();
 			}
 		});
 
@@ -105,12 +105,12 @@ public class LoginUI extends JFrame {
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = new String(jpf1.getPassword()).trim();
-				System.out.println("密码长度：" + s.length());
+//				System.out.println("密码长度：" + s.length());
 				if (s.length() >= 6) {
 					e.consume();
 				}
-//				password = s;
-//				System.out.println("password" + password);
+				// password = s;
+				// System.out.println("password" + password);
 			}
 		});
 
@@ -187,9 +187,10 @@ public class LoginUI extends JFrame {
 						break;
 					}
 				} else {
+					System.out.println("null");
 					JOptionPane.showMessageDialog(null, "注销失败！", "提示", JOptionPane.ERROR_MESSAGE);
 				}
-//				System.exit(0);
+				// System.exit(0);
 			}
 		});
 
