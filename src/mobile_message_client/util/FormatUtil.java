@@ -45,7 +45,7 @@ public class FormatUtil {
 		SMSString.append(formatSMS.getSourceAddress() != null ? formatSMS.getSourceAddress() : "00000000000");
 		SMSString.append(formatSMS.getTargetAddress() != null ? formatSMS.getTargetAddress() : "00000000000");
 		SMSString.append(formatSMS.getStatus() != null ? formatSMS.getStatus() : "0000");
-		SMSString.append(formatSMS.getContent() != null ? formatSMS.getContent() : "");
+		SMSString.append(formatSMS.getContent() != null ? formatSMS.getContent() : "0");
 		return SMSString.toString();
 	}
 }

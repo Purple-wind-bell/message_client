@@ -5,8 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,13 +30,13 @@ public class SendMessageUI extends JFrame {
 	/** 源地址 */
 	String sourceAddress = "17012341234";
 	/** 目标地址 */
-	String targetAddress = "00000000000";
+	String targetAddress = "";
 	/** 短信长度或返回状态码 */
 	String status = "0001";
 	/** 短信内容 */
 	String content = "0";
 	/** 显示框内容 */
-	StringBuilder mString = new StringBuilder();
+	String string;
 	JTextArea jta1 = new JTextArea(25, 30);
 	JTextField jtf1 = new JTextField(25);
 	JTextField jtf2 = new JTextField(23);
@@ -45,8 +45,13 @@ public class SendMessageUI extends JFrame {
 	public SendMessageUI(String sourceAddress) throws HeadlessException {
 		super();
 		this.sourceAddress = sourceAddress;
+		System.out.println("sourceAddress" + sourceAddress);
 		receive = new Receive();
 		receive.start();
+	}
+
+	public static void main(String[] args) {
+		new SendMessageUI("11111111111").sendmessage();
 	}
 
 	public void sendmessage() {
@@ -86,57 +91,31 @@ public class SendMessageUI extends JFrame {
 		this.setResizable(false);
 
 		// 输入的手机号控制为11位
-		jtf1.addKeyListener(new KeyListener() {
+		jtf1.addKeyListener(new KeyAdapter() {
+
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = jtf1.getText();
 				if (s.length() >= 11) {
 					e.consume();
-				} else {
-					targetAddress = s;
 				}
+				// targetAddress = s;
+				// System.out.println("targetAddress" + targetAddress);
 			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
 		});
 
 		// 编辑的短信内容控制为140位
-		jtf2.addKeyListener(new KeyListener() {
+		jtf2.addKeyListener(new KeyAdapter() {
+
 			@Override
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = jtf2.getText();
 				if (s.length() >= 140) {
 					e.consume();
-				} else {
-					content = s;
 				}
 			}
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
 		});
 
 		// 发送按钮
@@ -144,11 +123,18 @@ public class SendMessageUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				System.out.println("targetAddress" + targetAddress);
+				targetAddress = jtf1.getText().toString().trim();
+				int length = targetAddress.length();
+				for (int i = 0; i < 11 - length; i++) {
+					targetAddress = "0" + targetAddress;// 补足11位
+				}
+				content = jtf2.getText().toString().trim();
+//				System.out.println("sourceAddress" + sourceAddress);
+//				System.out.println("targetAddress" + targetAddress);
 				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, targetAddress, status, content);
 				new SendSMSService(sendSMS).send();// 发送短信
-				mString.append("发送：" + sendSMS.toString());// 添加已发短信
-				jta1.setText(mString.toString());// 显示收发短信
+				string = string + "已发送：\n" + sendSMS.toString() + "\n";// 添加已发短信
+				jta1.setText(string);// 显示收发短信
 			}
 		});
 
@@ -191,17 +177,17 @@ public class SendMessageUI extends JFrame {
 		 * 监听接收短信
 		 */
 		public void run() {
+			String smsString;
+			FormatSMS receiveSMS = null;
 			while (true) {
-				String smsString;
-				FormatSMS receiveSMS = null;
 				try {
 					socket = server.accept();// 每个请求交给一个线程去处理
 					bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					if ((smsString = bReader.readLine()) != null) {
 						receiveSMS = FormatUtil.toFormatSMS(smsString);// 接收的短信
-						mString.append("接收：" + receiveSMS.toString());// 添加短信
-						jta1.setText(receiveSMS.toString());// 显示所有收发短信
-						break;
+						System.out.println("接收短信");
+						string = string + "已接收：\n" + receiveSMS.toString() + "\n";// 添加短信
+						jta1.setText(string);// 显示所有收发短信
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -210,12 +196,13 @@ public class SendMessageUI extends JFrame {
 		}
 
 		public void close() {
-			try {
-				socket.close();
-				bReader.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (socket != null) {
+				try {
+					socket.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}

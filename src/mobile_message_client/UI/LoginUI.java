@@ -84,7 +84,7 @@ public class LoginUI extends JFrame {
 				if (s.length() >= 11) {
 					e.consume();
 				}
-				sourceAddress = s;
+//				sourceAddress = s;
 //				System.out.println("sourceAddress" + sourceAddress);
 //				System.out.println("手机号长度:" + sourceAddress.length());
 			}
@@ -109,7 +109,7 @@ public class LoginUI extends JFrame {
 				if (s.length() >= 6) {
 					e.consume();
 				}
-				password = s;
+//				password = s;
 //				System.out.println("password" + password);
 			}
 		});
@@ -120,7 +120,7 @@ public class LoginUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// 登录手机号长度和密码长度检查
-				sourceAddress = jtf1.getText().toString().trim();
+				sourceAddress = jtf1.getText().trim();
 				password = new String(jpf1.getPassword()).trim();
 				ip = jtf2.getText().toString().trim();
 				System.out.println("手机号：" + sourceAddress);
@@ -135,7 +135,7 @@ public class LoginUI extends JFrame {
 					FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, "00000000000", status, content);
 					RegisterService register = new RegisterService(sendSMS);// 发送登录请求
 					FormatSMS reveiceSMS = register.start();// 接收回复短信
-					// ==========================
+					// =================
 					if (reveiceSMS != null) {
 						switch (reveiceSMS.getStatus()) {
 						case "3000":// 用户不存在
@@ -171,7 +171,7 @@ public class LoginUI extends JFrame {
 				String cmd = "CMD002";
 				String status = "0000";
 				String content = "0";
-				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, null, status, content);
+				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, "00000000000", status, content);
 				RegisterService register = new RegisterService(sendSMS);// 发送登录请求
 				FormatSMS reveiceSMS = register.start();// 接收回复短信
 				if (reveiceSMS != null) {
