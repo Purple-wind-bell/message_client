@@ -49,7 +49,7 @@ public class LoginUI extends JFrame {
 		JLabel jl5 = new JLabel("IP地址：");
 		final JTextField jtf2 = new JTextField(20);
 		JButton jb1 = new JButton("登录");
-		JButton jb2 = new JButton("退出");
+		JButton jb2 = new JButton("注销");
 		JButton jb3 = new JButton("注册账号");
 
 		c.add(jp1);
@@ -163,7 +163,7 @@ public class LoginUI extends JFrame {
 			}
 		});
 
-		// 按钮2 退出
+		// 按钮2 注销
 		jb2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -189,7 +189,7 @@ public class LoginUI extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(null, "注销失败！", "提示", JOptionPane.ERROR_MESSAGE);
 				}
-				System.exit(0);
+//				System.exit(0);
 			}
 		});
 
