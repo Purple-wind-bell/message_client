@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import mobile_message_client.Service.RegisterService;
+import mobile_message_client.util.Tools;
 import mobile_message_client.vo.FormatSMS;
 
 @SuppressWarnings("serial")
@@ -25,7 +26,7 @@ public class LoginUI extends JFrame {
 	/** 密码 */
 	private String password = "";
 	/** 当前用户是否在线 */
-	private	boolean onlineStatus = false;
+	private boolean onlineStatus = false;
 	private String ip = "0.0.0.0";
 
 	public LoginUI() throws HeadlessException {
@@ -105,7 +106,7 @@ public class LoginUI extends JFrame {
 			public void keyTyped(KeyEvent e) {
 				// TODO Auto-generated method stub
 				String s = new String(jpf1.getPassword()).trim();
-//				System.out.println("密码长度：" + s.length());
+				// System.out.println("密码长度：" + s.length());
 				if (s.length() >= 6) {
 					e.consume();
 				}
@@ -126,9 +127,9 @@ public class LoginUI extends JFrame {
 				System.out.println("手机号：" + sourceAddress);
 				System.out.println("密码：" + password);
 				System.out.println("IP:" + ip);
-				if (sourceAddress.length() < 11 || password.length() < 6 || !isIp(ip) || onlineStatus) {
+				if (sourceAddress.length() < 11 || password.length() < 6 || !Tools.isIp(ip) || onlineStatus) {
 					JOptionPane.showMessageDialog(null, "用户名密码或IP错误！", "提示", JOptionPane.ERROR_MESSAGE);
-				} else {
+				} else if (onlineStatus == false) {// 客户端已有用户登录检测
 					String cmd = "CMD001";
 					String status = "0000";
 					String content = "DL" + password + ip;
@@ -159,6 +160,8 @@ public class LoginUI extends JFrame {
 					} else {
 						JOptionPane.showMessageDialog(null, "未知错误！", "提示", JOptionPane.ERROR_MESSAGE);
 					}
+				} else {
+					JOptionPane.showMessageDialog(null, "当前已有用户登录！", "提示", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -178,6 +181,7 @@ public class LoginUI extends JFrame {
 					switch (reveiceSMS.getStatus()) {
 					case "0000":// 注销成功
 						JOptionPane.showMessageDialog(null, "注销成功！", "提示", JOptionPane.PLAIN_MESSAGE);
+						onlineStatus = false;
 						break;
 					case "0001":// 注销失败
 						JOptionPane.showMessageDialog(null, "注销失败！", "提示", JOptionPane.ERROR_MESSAGE);
@@ -204,22 +208,5 @@ public class LoginUI extends JFrame {
 		});
 	}
 
-	/**
-	 * 判断是否是IP
-	 * 
-	 * @param ip
-	 * @return
-	 */
-	private boolean isIp(String ip) {
-		boolean b = false;
-		ip = ip.trim();
-		if (ip.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
-			String s[] = ip.split("\\.");
-			if (Integer.parseInt(s[0]) < 255 && Integer.parseInt(s[1]) < 255 && Integer.parseInt(s[2]) < 255
-					&& Integer.parseInt(s[3]) < 255) {
-				b = true;
-			}
-		}
-		return b;
-	}
+
 }

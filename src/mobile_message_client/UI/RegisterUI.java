@@ -13,9 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import mobile_message_client.Service.RegisterService;
-import mobile_message_client.Service.SendSMSService;
 import mobile_message_client.vo.FormatSMS;
-import sun.security.util.Length;
 
 /**
  * 注册UI
@@ -94,10 +92,6 @@ public class RegisterUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				// 手机号长度和密码长度检查
-				// System.out.println("sourceAddress" + sourceAddress);
-				// System.out.println("sourceAddress长度" + sourceAddress.length());
-				// System.out.println("password" + password);
-				// System.out.println("password长度" + password.length());
 				if (sourceAddress.length() < 11 || password.length() < 6) {
 					JOptionPane.showMessageDialog(null, "用户名或密码长度错误！", "提示", JOptionPane.ERROR_MESSAGE);
 				} else {

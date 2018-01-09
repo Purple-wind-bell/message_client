@@ -54,12 +54,12 @@ public class RegisterService {
 			System.out.println(FormatUtil.toStringSMS(sendFormatSMS));
 			pWriter.println(FormatUtil.toStringSMS(sendFormatSMS));// 发送登录注册短信
 			pWriter.flush();
-			System.out.println("注册已发送");
+			// System.out.println("注册已发送");
 			while (insms == null) {
 				insms = bReader.readLine();
 			}
 			receiveFormatSMS = FormatUtil.toFormatSMS(insms);// 格式化信息
-//			System.out.println("receiveFormatSMS" + receiveFormatSMS.toString());
+			// System.out.println("receiveFormatSMS" + receiveFormatSMS.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

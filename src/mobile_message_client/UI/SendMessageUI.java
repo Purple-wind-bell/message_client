@@ -139,8 +139,6 @@ public class SendMessageUI extends JFrame {
 					targetAddress = "0" + targetAddress;// 补足11位
 				}
 				content = jtf2.getText().toString().trim();
-				// System.out.println("sourceAddress" + sourceAddress);
-				// System.out.println("targetAddress" + targetAddress);
 				FormatSMS sendSMS = new FormatSMS(cmd, sourceAddress, targetAddress, status, content);
 				new SendSMSService(sendSMS).send();// 发送短信
 				string = string + "已发送：\n" + sendSMS.toString() + "\n";// 添加已发短信
