@@ -192,9 +192,11 @@ public class SendMessageUI extends JFrame {
 					socket = server.accept();// 每个请求交给一个线程去处理
 					bReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					if ((smsString = bReader.readLine()) != null) {
+						System.out.println(smsString);
 						receiveSMS = FormatUtil.toFormatSMS(smsString);// 接收的短信
 						// System.out.println("接收短信");
 						if (receiveSMS.getTargetAddress().equals(sourceAddress)) {// 鉴定收件人是否为自己
+							System.out.println(receiveSMS);
 							string = string + "已接收：\n" + receiveSMS.toString() + "\n";// 添加短信
 							jta1.setText(string);// 显示所有收发短信
 						}
